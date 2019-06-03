@@ -67,7 +67,7 @@ router.post('/register', (req, res) => {
                             newUser.password = hash;
                             // Save user
                             newUser.save()
-                                .then((user) => {
+                                .then(() => {
                                     res.redirect('/users/login');
                                 })
                                 .catch(e => console.log(e));
