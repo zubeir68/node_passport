@@ -3,11 +3,14 @@ const expressLayouts = require('express-ejs-layouts');
 const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const session = require('express-session');
+const passport = require('passport');
 
 const app = express();
 
-// DB
+// Passport config
+require('./config/passport')(passport);
 
+// DB
 mongoose.connect('mongodb://127.0.0.1:27017/auth', { useNewUrlParser: true })
     .then(() => console.log('MongoDB connected...'))
     .catch(err => console.log(err));
@@ -27,6 +30,10 @@ app.use(session({
     saveUninitialized: true,
 }));
 
+// Passport Middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Connect flash
 app.use(flash());
 
@@ -35,6 +42,7 @@ app.use(flash());
 app.use((req, res, next) => {
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
+    res.locals.error = req.flash('error');
     next();
 });
 
